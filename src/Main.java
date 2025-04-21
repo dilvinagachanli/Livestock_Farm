@@ -5,8 +5,8 @@ public class Main {
         CommunicationDevice zigbeeDevice = new ZigbeeDevice();
         CommunicationDevice bluetoothDevice = new BluetoothDevice();
 
-        Cattle cattle1 = new BeefCattle("123", "Kazan", "Beef", zigbeeDevice, true, true);
-        Cattle cattle2 = new DairyCattle("456", "Moscow", "Dairy", bluetoothDevice, false, false);
+        Cattle cattle1 = CattleFactory.getCattle("Beef", "123", "Krasnodar", zigbeeDevice);
+        Cattle cattle2 = CattleFactory.getCattle("Dairy", "456", "Moscow", bluetoothDevice);
 
         cattle1.updateLocation("Krasnodar");
         cattle1.setDevice(bluetoothDevice);
