@@ -1,19 +1,44 @@
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-        CommunicationDevice zigbeeDevice = new ZigbeeDevice();
-        CommunicationDevice bluetoothDevice = new BluetoothDevice();
+        // Create cattle using Factory Method
+        Cattle dairy = CattleFactory.createCattle("dairy", "D001", "North Field");
+        Cattle beef = CattleFactory.createCattle("beef", "B001", "South Field");
 
-        Cattle cattle1 = CattleFactory.getCattle("Beef", "123", "Krasnodar", zigbeeDevice);
-        Cattle cattle2 = CattleFactory.getCattle("Dairy", "456", "Moscow", bluetoothDevice);
+        CattleList cattleList = new CattleList();
+        cattleList.Add(dairy);
+        cattleList.Add(beef);
 
-        cattle1.updateLocation("Krasnodar");
-        cattle1.setDevice(bluetoothDevice);
-        cattle1.updateLocation("Moscow");
 
-        cattle2.updateLocation("Krasnodar");
-        cattle2.setDevice(zigbeeDevice);
-        cattle2.updateLocation("Moscow");
+
+        // Visitor Pattern for the vet and ministry visits and checks
+        CattleVisitor vet = new VeterinaryVisitor();
+        CattleVisitor ministry = new MinistryVisitor();
+        cattleList.Accept(vet);
+        cattleList.Accept(ministry);
+
+
+
+        // Adapter Pattern to use for some of the cattle's that have bluetooth devices. we needed a converter
+        CommunicationDevice zigbee = new ZigbeeDevice();
+        CommunicationDevice adaptedBluetooth = new BluetoothToZigbeeAdapter(new BluetoothDevice());
+        zigbee.sendLocation(dairy.getId(), dairy.getLocation());
+        adaptedBluetooth.sendLocation(beef.getId(), beef.getLocation());
+
+        // Singleton Pattern
+        LocationDatabase db = LocationDatabase.getInstance();
+        db.storeLocation(dairy.getId(), dairy.getLocation());
+        db.storeLocation(beef.getId(), beef.getLocation());
+
+        // Abstract Factory Pattern (Feeding)
+        FeedFactory dairyFeedFactory = new DairyFeedFactory();
+        FeedFactory beefFeedFactory = new BeefFeedFactory();
+
+        System.out.println("\nDairy Cattle Feed:");
+        dairyFeedFactory.createCarbohydrate().describe();
+        dairyFeedFactory.createProtein().describe();
+
+        System.out.println("\nBeef Cattle Feed:");
+        beefFeedFactory.createCarbohydrate().describe();
+        beefFeedFactory.createProtein().describe();
     }
 }

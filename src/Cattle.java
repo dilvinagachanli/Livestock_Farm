@@ -1,47 +1,41 @@
 abstract class Cattle {
-    protected String id;
-    protected String location;
-    protected String type;
-    protected CommunicationDevice communicationDevice;
-    protected boolean hasEarTag= false;
-    protected boolean isVaccinated = false;
 
-    public Cattle(String id, String location, String type, CommunicationDevice communicationDevice, boolean hasEarTag, boolean isVaccinated) {
-        this.id = id;
-        this.location = location;
-        this.type = type;
-        this.communicationDevice = communicationDevice;
-        this.hasEarTag = hasEarTag;
-        this.isVaccinated = isVaccinated;
+    private String id;
+    private String location;
+    private boolean vaccinated = false, earTag = false;
+
+    void Accept(CattleVisitor visitor) {
     }
-    public void updateLocation(String newLocation){
-        this.location = newLocation;
-        communicationDevice.sendLocation(id, location);
+
+    String getId() {
+        return id;
     }
-    public void setDevice(CommunicationDevice device){
-        this.communicationDevice = device;
+
+    String getLocation() {
+        return location;
+    }
+
+    boolean isVaccinated() {
+        if (!vaccinated) {
+            return false;
+        }
+        return true;
+    }
+
+    boolean hasEarTag() {
+        if (!earTag) {
+            return false;
+        }
+        return true;
+    }
+
+    void vaccinate() {
+        vaccinated = true;
+    }
+
+    void applyEarTag() {
+        earTag = true;
+    }
 
 
-    }
-    public abstract String getFeedingPlan();
 }
-class DairyCattle extends Cattle{
-    public DairyCattle(String id, String location, String type, CommunicationDevice communicationDevice, boolean hasEarTag, boolean isVaccinated) {
-        super(id, location, type, communicationDevice, hasEarTag, isVaccinated);
-    }
-    @Override
-    public String getFeedingPlan() {
-        return "Feeding plan for Dairy Cattle";
-    }
-}
-class BeefCattle extends Cattle{
-    public BeefCattle(String id, String location, String type, CommunicationDevice communicationDevice, boolean hasEarTag, boolean isVaccinated) {
-        super(id, location, type, communicationDevice, hasEarTag, isVaccinated);
-    }
-    @Override
-    public String getFeedingPlan() {
-        return "Feeding plan for Beef Cattle";
-    }
-}
-
-
